@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_riverpod: ^1.0.3
   get: ^4.6.1
+  cloud_functions: ^3.2.14
 
 dev_dependencies:
   flutter_test:

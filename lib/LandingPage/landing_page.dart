@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mkdao/LandingPage/landingpagecontroller.dart';
-import 'package:mkdao/models/newAccountModel.dart';
-
 import '../MainPage/mainpage.dart';
+import '../helpers/activeAccont.dart';
 
 class LandingPage extends StatelessWidget {
   LandingPage({Key? key}) : super(key: key);
@@ -23,11 +22,7 @@ class LandingPage extends StatelessWidget {
                 children: [
                   ElevatedButton(
                       onPressed: () async {
-                        List keys = await controller.createAccount();
-                        Account acc = keys[0];
-                        PrivateKey private = keys[1];
-                        PublicKey public = keys[2];
-
+                        Account keys = await controller.createAccount();
                         await Get.defaultDialog(
                             content: SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.7,
@@ -42,9 +37,9 @@ class LandingPage extends StatelessWidget {
                                       );
                                     case creationState.success:
                                       return Column(children: [
-                                        Text(acc.id),
-                                        Text(private.id),
-                                        Text(public.id),
+                                        Text(keys.accountID),
+                                        Text(keys.privateKey),
+                                        Text(keys.publicKey),
                                         ElevatedButton(
                                             onPressed: () {
                                               Get.back();

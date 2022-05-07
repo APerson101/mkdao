@@ -159,15 +159,19 @@ class MainPage extends StatelessWidget {
                                                     0.6,
                                                 child: Center(
                                                     child: Row(children: [
-                                                  TextField(
-                                                    onChanged: (enteredEmail) =>
-                                                        creator.setSigneeEmail(
-                                                            enteredEmail,
-                                                            index),
-                                                    decoration:
-                                                        const InputDecoration(
-                                                            hintText:
-                                                                'Enter Email'),
+                                                  SizedBox(
+                                                    width: 150,
+                                                    child: TextField(
+                                                      onChanged: (enteredEmail) =>
+                                                          creator
+                                                              .setSigneeEmail(
+                                                                  enteredEmail,
+                                                                  index),
+                                                      decoration:
+                                                          const InputDecoration(
+                                                              hintText:
+                                                                  'Enter Email'),
+                                                    ),
                                                   ),
                                                   ElevatedButton(
                                                       onPressed: () async {
