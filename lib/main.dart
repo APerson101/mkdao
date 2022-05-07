@@ -16,7 +16,7 @@ void main() async {
           storageBucket: "mkdao-564b7.appspot.com",
           messagingSenderId: "918021967022",
           appId: "1:918021967022:web:cb2d3cbe7b1fe66a04b13f"));
-  FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
+  // FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
   runApp(const MyApp());
 }
 
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Flutter Demo',
-      home: LandingPage(),
+      home: MainPage(),
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

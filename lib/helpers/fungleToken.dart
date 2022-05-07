@@ -1,35 +1,14 @@
-/* eslint-disable*/
-import {
-  AccountCreateTransaction,
-  AccountId,
-  BadKeyError,
-  Client,
-  CustomFixedFee,
-  CustomFractionalFee,
-  CustomRoyaltyFee,
-  Hbar,
-  KeyList,
-  PrivateKey,
-  PublicKey,
-  TokenCreateTransaction,
-  TokenId,
-} from "@hashgraph/sdk";
+ import 'package:mkdao/helpers/backendhelper.dart';
 
-
-function verifyKey(enteredText: string): Either<BadKeyError, PublicKey> {
-  // sample implementation
-  // verifyKey('dfsdfer').cata(() => { console.log("Wrong key enterted") }, (pk) => console.log('correct key entered'))
-  return Either.fromTry(() => PublicKey.fromString(enteredText));
+Future<bool> verifyKey( String enteredText)async{
+   return await BackendHelper().vefifyKey(enteredText);
 }
 
-function verifyAccount(enteredText: string): Either<BadKeyError, AccountId> {
-
-  // sample implementation
-  // verifyKey('dfsdfer').cata(() => { console.log("Wrong key enterted") }, (pk) => console.log('correct key entered'))
-  return Either.fromTry(() => AccountId.fromString(enteredText))
+Future<bool>  verifyAccount(String enteredText)async {
+  return await BackendHelper().verifyAccount(enteredText);
 }
 
-async function CreateDAOToken(
+ CreateDAOToken(
   dao: DAO, client: Client, treasuryPrivateKey: PrivateKey): Promise<TokenId> {
   const newTokenTransaction = await new TokenCreateTransaction()
     .setDecimals(dao.tokenDetails.deciaml)
@@ -102,55 +81,21 @@ class DAO {
 }
 
 class TokenDetails {
-  name: string;
-  tokenSymbol: string;
-  deciaml: number;
-  initialSupply: number;
-  adminKey: PublicKey | null;
-  freezeKey: PublicKey | null;
-  treasuryAccountId: AccountId;
-  infiniteSuply: boolean;
-  maxSupply: number;
-  supplyKey: PublicKey | null;
-  pauseKey: PublicKey | null;
-  kycKey: PublicKey | null;
-  TokenMemo: string;
-  customeFees: CustomeFees | null;
-  wipeKey: PublicKey | null;
-  constructor(name: string,
-    tokenSymbol: string,
-    deciaml: number,
-    initialSupply: number,
-    treasuryAccountId: AccountId,
-    adminKey: PublicKey,
-    kycKey: PublicKey,
-    freezeKey: PublicKey,
-    wipeKey: PublicKey,
-    supplyKey: PublicKey,
-    pauseKey: PublicKey,
-    memo: string,
-    maxSupply: number,
-    customFees: CustomeFees,
-    infiniteSuply: boolean) {
-    new CustomFixedFee();
-    new CustomFractionalFee();
-    new CustomRoyaltyFee();
-    this.deciaml = deciaml;
-    this.infiniteSuply = infiniteSuply;
-    this.initialSupply = initialSupply;
-    this.name = name;
-    this.tokenSymbol = tokenSymbol;
-    this.treasuryAccountId = treasuryAccountId;
-    this.adminKey = adminKey;
-    this.maxSupply = maxSupply;
-    this.kycKey = kycKey;
-    this.freezeKey = freezeKey;
-    this.wipeKey = wipeKey;
-    this.supplyKey = supplyKey;
-    this.pauseKey = pauseKey;
-    this.TokenMemo = memo;
-    this.customeFees = customFees
-  }
+  String name;
+  String tokenSymbol;
+  int decimal;
+  int initialSupply;
+  String adminKey;
+  String freezeKey;
+  String treasuryAccountId;
+  bool infiniteSuply;
+  int maxSupply;
+  String supplyKey;
+  String pauseKey;
+  String kycKey;
+  String TokenMemo;
+  String wipeKey;
+ 
 }
 
 enum CustomeFees { FIXED, FRACIONAL, ROYALTY }

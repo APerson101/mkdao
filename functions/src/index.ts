@@ -1,16 +1,28 @@
 import * as functions from "firebase-functions";
-import { createAccount } from "./createaccount";
+import { createnewAccount } from "./createaccount";
+import { sendEmail } from "./mailingservice";
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
 
-export const createaccount = functions.https.onCall(async () => {
-  const converted = JSON.stringify(await createAccount());
-  console.log(converted);
-  return converted;
+export const createAccount = functions.https.onCall(async (pulickey) => {
+  var pk = pulickey.publickey;
+  return await createnewAccount(pk);
 });
+export const sendMail = functions.https.onCall(async (variables) => {
+  console.log("what is the issue hrer");
+  var receivers = variables.receivers;
+  var number_of_people = variables.number_of_people;
+  var daoname = variables.daoName;
+
+  return await sendEmail(receivers, daoname, number_of_people);
+});
+
+export const dontCreateme = functions.https.onCall(() => {
+  return JSON.stringify("THis hs to be the strngetset errpr")
+});
+
+
+export const helloWorldWIEIEIEI = functions.https.onCall(() => {
+  console.log("what is the issue hrer");
+  return JSON.stringify('wlkhdiuofkhsdfkfdsjkdf fdgds i')
+});
+
