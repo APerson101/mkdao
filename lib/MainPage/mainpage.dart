@@ -115,8 +115,6 @@ class MainPage extends StatelessWidget {
                                 ),
                                 onChanged: (x) {
                                   creator.changeTotalAcc(int.parse(x));
-                                  creator.signatoriesAmount.value =
-                                      int.parse(x);
                                 }),
                             TextField(
                               decoration: const InputDecoration(
