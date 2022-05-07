@@ -8,21 +8,20 @@ class DashboardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: ButtonBar(
-        children: [
-          ElevatedButton(
-              onPressed: () async {
-                await Get.defaultDialog(content: MakeInvoiceView());
-              },
-              child: const Text("Generate invoice")),
-          ElevatedButton(
-              onPressed: () async {
-                await Get.defaultDialog(content: NewPaymentView());
-              },
-              child: const Text("Make Payment")),
-        ],
-      ),
+    return ButtonBar(
+      children: [
+        ElevatedButton(
+            onPressed: () async {
+              await Get.defaultDialog(
+                  content: MakeInvoiceView(), onCancel: () => Get.back());
+            },
+            child: const Text("Generate invoice")),
+        ElevatedButton(
+            onPressed: () async {
+              await Get.defaultDialog(content: NewPaymentView());
+            },
+            child: const Text("Make Payment")),
+      ],
     );
   }
 }
