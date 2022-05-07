@@ -1,4 +1,5 @@
 import 'package:get/state_manager.dart';
+import 'package:mkdao/helpers/backendhelper.dart';
 
 enum EmailSendingStatus { none, sending, sent, verified }
 
@@ -27,9 +28,11 @@ class DAOCreator extends GetxController {
     allSigneesEmail[index] = enteredEmail;
   }
 
-  sendEmail(int index) {
+  sendEmail(int index) async {
     //do stuffs
     allSigneesStatus[index] = EmailSendingStatus.sending;
+    // await BackendHelper().sendEmail(allSigneesEmail[index]);
+    allSigneesStatus[index] = EmailSendingStatus.sent;
   }
 
   changeTotalAcc(int newNumber) {
@@ -39,5 +42,15 @@ class DAOCreator extends GetxController {
     allSigneesStatus =
         List.filled(newNumber, EmailSendingStatus.none, growable: true).obs;
     signatoriesAmount.value = newNumber;
+  }
+
+  createDAO() async {
+    // CREATE FUNGIBLE TOKEN
+
+    await BackendHelper().createFungibleToken();
+  }
+
+  createTreasury() async {
+    await BackendHelper().createAccount(publickey: allSigneesPubKey);
   }
 }
