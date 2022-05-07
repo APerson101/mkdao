@@ -22,6 +22,7 @@ class HomeView extends StatelessWidget {
         Positioned(
             left: 0,
             width: MediaQuery.of(context).size.width * 0.2,
+            height: MediaQuery.of(context).size.height * 0.9,
             child: SideBar(
               controller: controller,
             )),

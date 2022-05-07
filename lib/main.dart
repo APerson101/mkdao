@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mkdao/LandingPage/landing_page.dart';
 import 'package:mkdao/MainPage/mainpage.dart';
+import 'package:mkdao/home/homeview.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Flutter Demo',
-      home: MainPage(),
+      home: HomeView(),
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
