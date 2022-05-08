@@ -1,5 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:mkdao/helpers/backendhelper.dart';
+
+import '../helpers/fungleToken.dart';
 
 enum EmailSendingStatus { none, sending, sent, verified }
 
@@ -13,6 +17,15 @@ class DAOCreator extends GetxController {
   RxString tokenMemo = ''.obs;
   RxInt initialSupply = 1000000.obs;
   RxInt signatoriesAmount = 1.obs;
+  RxString freezeKey = ''.obs;
+  RxBool infiniteSuply = false.obs;
+  RxInt maxSupply = 100000000.obs;
+  RxString adminKey = ''.obs;
+  RxString supplyKey = ''.obs;
+  RxString pauseKey = ''.obs;
+  RxString kycKey = ''.obs;
+  RxString wipeKey = ''.obs;
+  RxString customeFees = ''.obs;
 
   RxInt minimumrequired = 1.obs;
   RxList<EmailSendingStatus> allSigneesStatus =
@@ -46,8 +59,26 @@ class DAOCreator extends GetxController {
 
   createDAO() async {
     // CREATE FUNGIBLE TOKEN
+    var token = TokenDetails(
+        decimal: tokenDecimal.value,
+        initialSupply: initialSupply.value,
+        name: tokenName.value,
+        tokenSymbol: tokenSymbol.value,
+        tokenMemo: tokenMemo.value,
+        adminKey: adminKey.value,
+        freezeKey: freezeKey.value,
+        infiniteSuply: infiniteSuply.value,
+        maxSupply: maxSupply.value,
+        supplyKey: supplyKey.value,
+        pauseKey: pauseKey.value,
+        kycKey: kycKey.value,
+        wipeKey: wipeKey.value,
+        treasuryAccountId: treasuryAccount.value);
 
-    await BackendHelper().createFungibleToken();
+    var dao = DAO(daoName.value, description.value, token);
+
+    bool status = await BackendHelper().createDAO(dao: dao);
+    return status;
   }
 
   createTreasury() async {

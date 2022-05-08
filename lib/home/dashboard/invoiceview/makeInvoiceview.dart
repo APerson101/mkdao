@@ -25,8 +25,8 @@ class MakeInvoiceView extends StatelessWidget {
               onChanged: (add) => controller.amount.value = add,
             ),
             ElevatedButton(
-                onPressed: () {
-                  controller.sendInvoice();
+                onPressed: () async {
+                  await controller.sendInvoice();
                 },
                 child: Text('Send Invoice'))
           ],

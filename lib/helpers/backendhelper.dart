@@ -1,11 +1,6 @@
-import 'dart:ffi';
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/material.dart';
 import 'package:mkdao/helpers/activeAccont.dart';
-import 'package:mkdao/helpers/emailer.dart';
 import 'fungleToken.dart';
 
 class BackendHelper {
@@ -22,43 +17,49 @@ class BackendHelper {
     return account!;
   }
 
-  createDAO() async {
+  createDAO({DAO? dao}) async {
+    await Future.delayed(Duration(seconds: 3), () => {true});
+    return true;
+    var publickey =
+        '302a300506032b65700321007e9921707f9e7b8c6d256878233e9967670fc2e4111b9cf849bfd8d1d301527f';
     HttpsCallableResult newDAO =
-        await instance.httpsCallable('createDAO').call();
+        //     await instance.httpsCallable('createDAO').call({
+        //   'daoDetails': {
+        //     'pe_key': account!.privateKey,
+        //     'tokenDetails': dao.tokenDetails.toMap()
+        //   },
+        // });
+
+        await instance.httpsCallable('createDAO').call({
+      'daoDetails': {
+        'pe_key':
+            '302e020100300506032b657004220420be6a4b6614ede100b515bdca60dee882849a353f184a964cee23839181d9865f',
+        'tokenDetails': {
+          'name': 'tokenName231',
+          'tokenSymbol': 'fde',
+          'deciaml': 2,
+          'initialSupply': 10000000,
+          'adminKey': publickey,
+          'freezeKey': publickey,
+          'treasuryAccountId': '0.0.34402326',
+          'infiniteSuply': false,
+          'supplyKey': publickey,
+          'pauseKey': publickey,
+          'kycKey': publickey,
+          'tokenMemo': 'tokenMemo',
+          'wipeKey': publickey,
+        }
+      }
+    });
+
     print(newDAO.data);
-    // activeDAO = Account.fromJson(newDAO.data);
-    return activeDAO!;
+    // return activeDAO!;
   }
 
-//   sendEmail(String email) async {
-// // embed the secret code in the url and save it;
-
-//     HttpsCallableResult status = await instance
-//         .httpsCallable('sendMail')
-//         .call({'email': 'abdulhadih48@gmail.com'});
-//     print(status.data);
-//     return status.data;
-//   }
-
-//   storeToBase(String daoName, int number_of_people, List<String> emails) async
-//   {
-//     await firestore.doc("DAOCODES/$daoName").set({'emails':emails});
-//   var collection= firestore.collection('DAOCODES').snapshots();
-//   collection.listen((event) {
-//     // something
-//     var changes=event.docChanges;
-//     var emails__=changes.elementAt(0);
-//     var emails_=emails__.doc.get('emails');
-//     if(emails.contains(emails_)!=false)
-//     {
-//       //user done;
-//       mark as done
-//     }
-
-//   })
-// }
-
-  // }
+  generateInvoice(String payer, String amount) async {
+    await instance.httpsCallable('generateInvoice').call({
+      'amount': amount,
+      'payer': payer,
+    });
+  }
 }
-
-//  firebase emulators:start --only firestore

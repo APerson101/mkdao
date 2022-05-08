@@ -1,0 +1,18 @@
+createDAO('daoDetails': {
+        'pe_key': '302e020100300506032b6570042204208bb7577d581fdb869c4f83e92e6ab5d20b8dc3f9c2f8e94e461a0bf758a766cc',
+        'tokenDetails': {
+      'name': 'tokenName231',
+      'tokenSymbol': 'fde',
+      'deciaml': 2,
+      'initialSupply': 10000000,
+      'adminKey': '0.0.34392681',
+      'freezeKey': '0.0.34392681',
+      'treasuryAccountId': '0.0.34392681',
+      'infiniteSuply': false,
+      'supplyKey': '0.0.34392681',
+      'pauseKey':'0.0.34392681',
+      'kycKey': '0.0.34392681',
+      'tokenMemo': 'tokenMemo',
+      'wipeKey': '0.0.34392681',
+    }
+      })

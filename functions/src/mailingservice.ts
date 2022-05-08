@@ -1,7 +1,6 @@
 // import * from "nodemailer";
 /* eslint-disable*/
 // import mailjet from 
-import { generateAndStoreCode } from "./storemailcode";
 import * as ss from "node-mailjet";
 const v = ss.connect('5cf3835c986858df99223dc5e0c89071', '31b12add93430621b95fec377f7d456e')
 

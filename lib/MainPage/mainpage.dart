@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mkdao/MainPage/daocreator.dart';
 import 'package:mkdao/MainPage/mainpagecontroller.dart';
+import 'package:mkdao/home/homeview.dart';
 
 class MainPage extends StatelessWidget {
   MainPage({Key? key}) : super(key: key);
@@ -16,6 +17,7 @@ class MainPage extends StatelessWidget {
           ElevatedButton(
               onPressed: () async {
                 //
+                // await controller.createDAO();
                 await Get.defaultDialog(
                     content: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.88,
@@ -208,7 +210,19 @@ class MainPage extends StatelessWidget {
                           ])));
                 },
                 child: const Text('Create new MultiSig Treasury Account'))
-          ])
+          ]),
+          ElevatedButton(
+              onPressed: () async {
+                // simulate creation and show it
+                DAOCreator cc = Get.find();
+
+                var state = await cc.createDAO();
+                if (state) {
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => HomeView()));
+                }
+              },
+              child: const Text("CREATE!"))
         ],
       ),
     );

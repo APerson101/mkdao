@@ -20,7 +20,8 @@ class HomeView extends StatelessWidget {
         body: Stack(
       children: [
         Positioned(
-            left: 0,
+            left: 10,
+            top: 10,
             width: MediaQuery.of(context).size.width * 0.2,
             height: MediaQuery.of(context).size.height * 0.9,
             child: SideBar(
@@ -29,6 +30,7 @@ class HomeView extends StatelessWidget {
         Positioned(
             right: 0,
             width: MediaQuery.of(context).size.width * 0.78,
+            height: MediaQuery.of(context).size.height * 0.9,
             child: mainContent())
       ],
     ));
@@ -65,7 +67,20 @@ class SideBar extends StatelessWidget {
     return Drawer(
         child: ListView(
       children: [
-        DrawerHeader(child: Text('your name and stuffs')),
+        DrawerHeader(
+            child: Column(children: [
+          Text(
+            'MR DAO',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          Text(
+            "Total MR Tokens: 20 000",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+        ])),
         ListTile(
           title: const Text('Dashboard'),
           onTap: () => controller.currentPage.value = pages.dashboard,

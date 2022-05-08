@@ -1,83 +1,11 @@
- import 'package:mkdao/helpers/backendhelper.dart';
-
-Future<bool> verifyKey( String enteredText)async{
-   return await BackendHelper().vefifyKey(enteredText);
-}
-
-Future<bool>  verifyAccount(String enteredText)async {
-  return await BackendHelper().verifyAccount(enteredText);
-}
-
- CreateDAOToken(
-  dao: DAO, client: Client, treasuryPrivateKey: PrivateKey): Promise<TokenId> {
-  const newTokenTransaction = await new TokenCreateTransaction()
-    .setDecimals(dao.tokenDetails.deciaml)
-    .setInitialSupply(dao.tokenDetails.initialSupply)
-    .setAdminKey(dao.tokenDetails.adminKey)
-    .setFreezeKey(dao.tokenDetails.freezeKey)
-    .setMaxSupply(dao.tokenDetails.maxSupply)
-    .setTreasuryAccountId(dao.tokenDetails.treasuryAccountId)
-    .setTokenName(dao.tokenDetails.name)
-    .setTokenSymbol(dao.tokenDetails.tokenSymbol)
-    .setSupplyKey(dao.tokenDetails.supplyKey)
-    .setKycKey(dao.tokenDetails.kycKey)
-    .setTokenMemo(dao.tokenDetails.TokenMemo)
-    .setWipeKey(dao.tokenDetails.wipeKey)
-    .freezeWith(client)
-    .sign(treasuryPrivateKey)
-  const executed = await newTokenTransaction.execute(client);
-  const new_created_token_id = (await executed.getReceipt(client)).tokenId;
-  return new_created_token_id;
-}
-
-export type NewAccountDetails = { privateKey: PrivateKey, publicKey: PublicKey, accountID: AccountId }
-async function CreateTreasuryAccount(
-  threshhold: number, client: Client,
-  keys_to_accounts: PublicKey[]
-) {
-  var thresholdkey = new KeyList(keys_to_accounts, threshhold);
-  const newprivateKey = await PrivateKey.generateECDSAAsync();
-  const newpublicKey = newprivateKey.publicKey;
-  const newAccount = await new AccountCreateTransaction()
-    .setKey(thresholdkey)
-    .setInitialBalance(new Hbar(2))
-    .execute(client);
-  const getReceipt = await newAccount.getReceipt(client);
-  const newAccountId = getReceipt.accountId;
-  return { privateKey: newprivateKey, publicKey: newpublicKey, accountID: newAccountId }
-
-  // ask for number of required signatories.
-
-  //enter all 3 or create by sending link to their email,
-  // which they then open to create an account.
-  // It's basically and account creating page
-}
-export async function CreateAccount(client: Client): Promise<NewAccountDetails> {
-  // var priKeys: PrivateKey[] = new Array(3);
-  // var pubkeys: PublicKey[] = new Array(3);
-  // for (let index = 0; index < 3; index++) {
-  const pk = PrivateKey.generate();
-  // priKeys[index] = pk;
-  // pubkeys[index] = pk.publicKey;
-  const pub_key = pk.publicKey;
-  const newly_created_account = (await (await new AccountCreateTransaction()
-    .setInitialBalance(new Hbar(2))
-    .execute(client)).getReceipt(client)).accountId;
-  return { privateKey: pk, publicKey: pub_key, accountID: newly_created_account };
-  // console.log(`private key: ${pk.toStringRaw()}, public key : ${pk.publicKey.toStringRaw()}`);
-}
+import 'dart:convert';
 
 class DAO {
   //name should me maximum of 100 characters
-  name: string;
-  description: string;
-  tokenDetails: TokenDetails;
-  constructor(name: string, description: string, tokenDetails: TokenDetails) {
-    this.description = description;
-    this.name = name;
-    this.tokenDetails = tokenDetails;
-  }
-
+  String name;
+  String description;
+  TokenDetails tokenDetails;
+  DAO(this.name, this.description, this.tokenDetails);
 }
 
 class TokenDetails {
@@ -85,17 +13,151 @@ class TokenDetails {
   String tokenSymbol;
   int decimal;
   int initialSupply;
-  String adminKey;
-  String freezeKey;
+  String? adminKey;
+  String? freezeKey;
   String treasuryAccountId;
-  bool infiniteSuply;
-  int maxSupply;
-  String supplyKey;
-  String pauseKey;
-  String kycKey;
-  String TokenMemo;
-  String wipeKey;
- 
-}
+  bool? infiniteSuply;
+  int? maxSupply;
+  String? supplyKey;
+  String? pauseKey;
+  String? kycKey;
+  String? tokenMemo;
+  String? wipeKey;
+  TokenDetails({
+    required this.name,
+    required this.tokenSymbol,
+    required this.decimal,
+    required this.initialSupply,
+    required this.treasuryAccountId,
+    this.tokenMemo,
+    this.adminKey,
+    this.freezeKey,
+    this.infiniteSuply,
+    this.maxSupply,
+    this.supplyKey,
+    this.pauseKey,
+    this.kycKey,
+    this.wipeKey,
+  });
 
-enum CustomeFees { FIXED, FRACIONAL, ROYALTY }
+  TokenDetails copyWith({
+    String? name,
+    String? tokenSymbol,
+    int? decimal,
+    int? initialSupply,
+    String? adminKey,
+    String? freezeKey,
+    String? treasuryAccountId,
+    bool? infiniteSuply,
+    int? maxSupply,
+    String? supplyKey,
+    String? pauseKey,
+    String? kycKey,
+    String? tokenMemo,
+    String? wipeKey,
+  }) {
+    return TokenDetails(
+      name: name ?? this.name,
+      tokenSymbol: tokenSymbol ?? this.tokenSymbol,
+      decimal: decimal ?? this.decimal,
+      initialSupply: initialSupply ?? this.initialSupply,
+      adminKey: adminKey ?? this.adminKey,
+      freezeKey: freezeKey ?? this.freezeKey,
+      treasuryAccountId: treasuryAccountId ?? this.treasuryAccountId,
+      infiniteSuply: infiniteSuply ?? this.infiniteSuply,
+      maxSupply: maxSupply ?? this.maxSupply,
+      supplyKey: supplyKey ?? this.supplyKey,
+      pauseKey: pauseKey ?? this.pauseKey,
+      kycKey: kycKey ?? this.kycKey,
+      tokenMemo: tokenMemo ?? this.tokenMemo,
+      wipeKey: wipeKey ?? this.wipeKey,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'tokenSymbol': tokenSymbol,
+      'deciaml': decimal,
+      'initialSupply': initialSupply,
+      'adminKey': adminKey?.isEmpty ?? treasuryAccountId,
+      'freezeKey': freezeKey?.isEmpty ?? treasuryAccountId,
+      'treasuryAccountId': treasuryAccountId,
+      'infiniteSuply': infiniteSuply,
+      'maxSupply': maxSupply,
+      'supplyKey': supplyKey?.isEmpty ?? treasuryAccountId,
+      'pauseKey': pauseKey?.isEmpty ?? treasuryAccountId,
+      'kycKey': kycKey?.isEmpty ?? treasuryAccountId,
+      'tokenMemo': tokenMemo,
+      'wipeKey': wipeKey?.isEmpty ?? treasuryAccountId,
+    };
+  }
+
+  factory TokenDetails.fromMap(Map<String, dynamic> map) {
+    return TokenDetails(
+      name: map['name'] ?? '',
+      tokenSymbol: map['tokenSymbol'] ?? '',
+      decimal: map['decimal']?.toInt() ?? 0,
+      initialSupply: map['initialSupply']?.toInt() ?? 0,
+      adminKey: map['adminKey'],
+      freezeKey: map['freezeKey'],
+      treasuryAccountId: map['treasuryAccountId'] ?? '',
+      infiniteSuply: map['infiniteSuply'],
+      maxSupply: map['maxSupply']?.toInt(),
+      supplyKey: map['supplyKey'],
+      pauseKey: map['pauseKey'],
+      kycKey: map['kycKey'],
+      tokenMemo: map['tokenMemo'],
+      wipeKey: map['wipeKey'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory TokenDetails.fromJson(String source) =>
+      TokenDetails.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'TokenDetails(name: $name, tokenSymbol: $tokenSymbol, decimal: $decimal, initialSupply: $initialSupply, adminKey: $adminKey, freezeKey: $freezeKey, treasuryAccountId: $treasuryAccountId, infiniteSuply: $infiniteSuply, maxSupply: $maxSupply, supplyKey: $supplyKey, pauseKey: $pauseKey, kycKey: $kycKey, tokenMemo: $tokenMemo, wipeKey: $wipeKey)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is TokenDetails &&
+        other.name == name &&
+        other.tokenSymbol == tokenSymbol &&
+        other.decimal == decimal &&
+        other.initialSupply == initialSupply &&
+        other.adminKey == adminKey &&
+        other.freezeKey == freezeKey &&
+        other.treasuryAccountId == treasuryAccountId &&
+        other.infiniteSuply == infiniteSuply &&
+        other.maxSupply == maxSupply &&
+        other.supplyKey == supplyKey &&
+        other.pauseKey == pauseKey &&
+        other.kycKey == kycKey &&
+        other.tokenMemo == tokenMemo &&
+        other.wipeKey == wipeKey;
+  }
+
+  @override
+  int get hashCode {
+    return name.hashCode ^
+        tokenSymbol.hashCode ^
+        decimal.hashCode ^
+        initialSupply.hashCode ^
+        adminKey.hashCode ^
+        freezeKey.hashCode ^
+        treasuryAccountId.hashCode ^
+        infiniteSuply.hashCode ^
+        maxSupply.hashCode ^
+        supplyKey.hashCode ^
+        pauseKey.hashCode ^
+        kycKey.hashCode ^
+        tokenMemo.hashCode ^
+        wipeKey.hashCode;
+  }
+}
