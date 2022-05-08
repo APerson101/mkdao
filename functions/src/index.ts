@@ -35,36 +35,37 @@ export const createDAO = functions.https.onCall(async (data) => {
   const my_AccountID = AccountId.fromString(myAccountIdString || '');
   const my_privatekey = PrivateKey.fromString(myPrivateKeyString || '');
   const client = Client.forTestnet();
-  client.setOperator(my_AccountID, my_privatekey);
+
+  client.setOperator(process.env.New_RPC_URL, process.env.Block_Explorer_URL);
   // var dao: DAO = DAO.fromMap(JSON.parse(data.dao));
   // var daopK = data.dao_private_key;
 
   var dao = data.daoDetails;
   var tpk = PrivateKey.fromString(dao.pe_key);
-  // const newTokenTransaction = await new TokenCreateTransaction()
-  //   .setDecimals(dao.tokenDetails.deciaml)
-  //   .setInitialSupply(dao.tokenDetails.initialSupply)
-  //   .setAdminKey(PublicKey.fromString(dao.tokenDetails.adminKey || ''))
-  //   .setFreezeKey(PublicKey.fromString(dao.tokenDetails.freezeKey || ''))
-  //   .setMaxSupply(dao.tokenDetails.maxSupply)
-  //   .setTreasuryAccountId(AccountId.fromString(dao.tokenDetails.treasuryAccountId))
-  //   .setTokenName(dao.tokenDetails.name)
-  //   .setTokenSymbol(dao.tokenDetails.tokenSymbol)
-  //   .setSupplyKey(PublicKey.fromString(dao.tokenDetails.supplyKey || ''))
-  //   .setKycKey(PublicKey.fromString(dao.tokenDetails.kycKey || ''))
-  //   .setTokenMemo(dao.tokenDetails.tokenMemo)
-  //   .setWipeKey(PublicKey.fromString(dao.tokenDetails.wipeKey || ''))
-  //   .freezeWith(client)
-  //   .sign(my_privatekey)
-  console.log(`treasury is ${dao.tokenDetails.treasuryAccountId}`);
   const newTokenTransaction = await new TokenCreateTransaction()
-    .setDecimals(2)
-    .setInitialSupply(10000)
+    .setDecimals(dao.tokenDetails.deciaml)
+    .setInitialSupply(dao.tokenDetails.initialSupply)
+    .setAdminKey(PublicKey.fromString(dao.tokenDetails.adminKey || ''))
+    .setFreezeKey(PublicKey.fromString(dao.tokenDetails.freezeKey || ''))
+    .setMaxSupply(dao.tokenDetails.maxSupply)
     .setTreasuryAccountId(AccountId.fromString(dao.tokenDetails.treasuryAccountId))
-    .setTokenName('sfdf')
-    .setTokenSymbol('sdfsfew')
+    .setTokenName(dao.tokenDetails.name)
+    .setTokenSymbol(dao.tokenDetails.tokenSymbol)
+    .setSupplyKey(PublicKey.fromString(dao.tokenDetails.supplyKey || ''))
+    .setKycKey(PublicKey.fromString(dao.tokenDetails.kycKey || ''))
+    .setTokenMemo(dao.tokenDetails.tokenMemo)
+    .setWipeKey(PublicKey.fromString(dao.tokenDetails.wipeKey || ''))
     .freezeWith(client)
     .sign(my_privatekey)
+  console.log(`treasury is ${dao.tokenDetails.treasuryAccountId}`);
+  // const newTokenTransaction = await new TokenCreateTransaction()
+  //   .setDecimals(2)
+  //   .setInitialSupply(10000)
+  //   .setTreasuryAccountId(AccountId.fromString(dao.tokenDetails.treasuryAccountId))
+  //   .setTokenName('sfdf')
+  //   .setTokenSymbol('sdfsfew')
+  //   .freezeWith(client)
+  //   .sign(my_privatekey)
 
   const executed = await newTokenTransaction.execute(client);
   const new_created_token_id = (await executed.getReceipt(client)).tokenId;
