@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'HRDAO Demo',
-      home: HomeView(),
+      home: LandingPage(),
       theme: ThemeData.dark(),
     );
   }

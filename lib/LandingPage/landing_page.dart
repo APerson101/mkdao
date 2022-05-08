@@ -10,8 +10,8 @@ class LandingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: Center(
+    return Scaffold(
+        body: Center(
       child: ElevatedButton(
           onPressed: () async {
             await Get.defaultDialog(

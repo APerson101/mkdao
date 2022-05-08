@@ -12,7 +12,9 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-      child: Row(
+      child: Center(
+          child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           ElevatedButton(
               onPressed: () async {
@@ -27,7 +29,7 @@ class MainPage extends StatelessWidget {
               },
               child: const Text("CREATE DAO")),
         ],
-      ),
+      )),
     ));
   }
 
