@@ -1,12 +1,12 @@
 import { Client, ContractId, ContractCreateFlow } from "@hashgraph/sdk";
 
-export async function deployInvoiceContract(clientel: Client): Promise<ContractId> {
+export async function deployInvoiceContract(creatorClient: Client): Promise<ContractId> {
   // create Invoice
-  const contractByteCode = process.env.invoicebytecode || '';
+  const invoicecontractByteCode = process.env.invoicebytecode || '';
   var invoiceContract = (await (await new ContractCreateFlow()
-    .setBytecode(contractByteCode)
+    .setBytecode(invoicecontractByteCode)
     .setGas(100_000)
-    .execute(clientel)).getReceipt(clientel)).contractId;
+    .execute(creatorClient)).getReceipt(creatorClient)).contractId;
   console.log(` new invoice contract is: ${invoiceContract} `);
   return invoiceContract!;
 }

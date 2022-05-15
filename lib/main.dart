@@ -1,10 +1,12 @@
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mkdao/LandingPage/landing_page.dart';
 import 'package:mkdao/MainPage/mainpage.dart';
 import 'package:mkdao/home/homeview.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:mkdao/notificationstester.dart';
 
 void main() async {
   await Firebase.initializeApp(
@@ -16,8 +18,17 @@ void main() async {
           storageBucket: "mkdao-564b7.appspot.com",
           messagingSenderId: "918021967022",
           appId: "1:918021967022:web:cb2d3cbe7b1fe66a04b13f"));
-  FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
+  // FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
+
   runApp(const MyApp());
+  FirebaseMessaging.onBackgroundMessage((message) async {
+    print("HELLO WORLD");
+    return;
+  });
+}
+
+backhg(message) async {
+  print(message);
 }
 
 class MyApp extends StatelessWidget {
@@ -29,7 +40,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'HRDAO Demo',
-      home: LandingPage(),
+      home: NotificationsTesters(),
+      // LandingPage(),
       theme: ThemeData.dark(),
     );
   }

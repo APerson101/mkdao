@@ -7,27 +7,30 @@ const my_AccountID = AccountId.fromString(myAccountIdString || '');
 const my_privatekey = PrivateKey.fromString(myPrivateKeyString || '');
 const client = Client.forTestnet();
 client.setOperator(my_AccountID, my_privatekey);
-export async function createnewAccount(pubKeys: (string)[], min_requied: number): Promise<{}> {
-  if (pubKeys !== null) {
-    const pk = PrivateKey.generate();
-    var pkl: (PublicKey)[] = [];
-    pubKeys.forEach(key => {
-      pkl.push(PublicKey.fromString(key));
-    });
-    var kl = new KeyList(pkl, min_requied);
-    const newly_created_account = (await (await new AccountCreateTransaction()
-      .setInitialBalance(new Hbar(2))
-      .setKey(kl)
-      .execute(client)).getReceipt(client)).accountId;
-    console.log(`DAO ACCOUNT CREATED WITH ID: ${newly_created_account!.toString()}`);
-    return { privateKey: pk.toStringRaw(), publicKey: pk.publicKey, accountID: newly_created_account!.toString() };
-  }
+
+// can create account for individual and Multisig
+export async function createnewAccount(): Promise<{}> {
   const pk = PrivateKey.generate();
   const pub_key = pk.publicKey;
   const newly_created_account = (await (await new AccountCreateTransaction()
-    .setInitialBalance(new Hbar(2))
+    .setInitialBalance(new Hbar(20))
     .setKey(pub_key)
     .execute(client)).getReceipt(client)).accountId;
   console.log(`private key: ${pk.toStringRaw()}, public key : ${pk.publicKey.toStringRaw()}`);
   return { privateKey: pk.toStringRaw(), publicKey: pub_key.toStringRaw(), accountID: newly_created_account!.toString() };
+}
+
+export async function createMutlisigAccount(pubKeys: (string)[], min_requied: number) {
+  //
+  var publicKeyList: (PublicKey)[] = [];
+  pubKeys.forEach(key => {
+    publicKeyList.push(PublicKey.fromString(key));
+  });
+  var keylist = new KeyList(publicKeyList, min_requied);
+  const newly_created_account = (await (await new AccountCreateTransaction()
+    .setInitialBalance(new Hbar(2))
+    .setKey(keylist)
+    .execute(client)).getReceipt(client)).accountId;
+  console.log(`NEW MULTISIG ACCOUNT CREATED WITH DETAILS: accountID: ${newly_created_account!.toString()}`)
+  return { accountID: newly_created_account!.toString() };
 }

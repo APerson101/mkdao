@@ -1,28 +1,29 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.8.0 <0.9.0;
+import "./helpers.sol";
 
 contract Invoicing {
-
-    struct Invoice{
-    address sender;
-    string description;
-    string category;
-    uint256 amount;
-    // bool status;
+    struct Invoice {
+        address sender;
+        string description;
+        string category;
+        uint256 amount;
+        string tokenId;
+        // bool status;
     }
 
-    mapping(string=>Invoice) invoiceMapping;
+    mapping(string => Invoice) invoiceMapping;
     // mapping(string=>bool) invoiceStatus;
     Invoice[] allInvoices;
     Invoice[] allUnpaidInvoices;
-    
 
-    function addInvoice(Invoice memory newInvoice, string memory invoiceId) public returns (bool)
+    function addInvoice(Invoice memory newInvoice, string memory invoiceId)
+        public
+        returns (bool)
     {
-        if (invoiceMapping[invoiceId].sender != newInvoice.sender )
-        {
+        if (invoiceMapping[invoiceId].sender != newInvoice.sender) {
             // Doesnt exists, add
-            invoiceMapping[invoiceId]=newInvoice;
+            invoiceMapping[invoiceId] = newInvoice;
             // invoiceStatus[invoiceId]=false;
             allInvoices.push(newInvoice);
             return true;
@@ -30,7 +31,10 @@ contract Invoicing {
         return false;
     }
 
-    function getInvoice(string memory invoiceId) public view returns (Invoice memory)
+    function getInvoice(string memory invoiceId)
+        public
+        view
+        returns (Invoice memory)
     {
         return invoiceMapping[invoiceId];
     }
@@ -43,8 +47,14 @@ contract Invoicing {
     //     return false;
     // }
 
-    function getAllInvoices() public view returns (Invoice[] memory)
-    {
+    function getAllInvoices() public view returns (Invoice[] memory) {
         return allInvoices;
+    }
+
+    function payInvoice(string memory invoiceId) public returns (bool) {
+        Invoice memory tobePaidInvoice = invoiceMapping[invoiceId];
+        int256 status=tokenTransfer(tobePaidInvoice.tokenId, this.address, tobePaidInvoice.sender, tobePaidInvoice.amount);
+        if(status==HederaResponseCodes.SUCCESS)
+        {return true;}
     }
 }
