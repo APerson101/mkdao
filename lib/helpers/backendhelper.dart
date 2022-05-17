@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/material.dart';
 import 'package:mkdao/helpers/activeAccont.dart';
 import 'fungleToken.dart';
+import 'package:uuid/uuid.dart';
 
 class BackendHelper {
   FirebaseFunctions instance = FirebaseFunctions.instance;
@@ -12,13 +14,14 @@ class BackendHelper {
     HttpsCallableResult newAccount = await instance
         .httpsCallable('createAccount')
         .call({'publickey': publickey});
+
     print(newAccount.data);
-    account = Account.fromJson(newAccount.data);
+    account = Account.fromMap(newAccount.data);
     return account!;
   }
 
   createDAO({DAO? dao}) async {
-    await Future.delayed(Duration(seconds: 3), () => {true});
+    await Future.delayed(const Duration(seconds: 3), () => {true});
     return true;
     var publickey =
         '302a300506032b65700321007e9921707f9e7b8c6d256878233e9967670fc2e4111b9cf849bfd8d1d301527f';
@@ -61,5 +64,36 @@ class BackendHelper {
       'amount': amount,
       'payer': payer,
     });
+  }
+
+  sendEmail(List<String> emails) async {
+    var uuid = const Uuid();
+    String id = uuid.v4();
+    print(emails);
+    await instance
+        .httpsCallable('sendSignUpEmails')
+        .call({'emails': emails, 'daoName': 'testName', 'id': id});
+    var house;
+    firestore.collection('MultiSig/$id/accounts').snapshots().listen((event) {
+      event.docChanges.forEach((element) {
+        house = {
+          'email': element.doc.get('email'),
+          'publicKey': element.doc.get('publicKey')
+        };
+      });
+    });
+    return house;
+  }
+
+  Future<bool> submitEmailCredentials(
+      Account newAccount, String id, String email) async {
+    //submit to firebase
+    var val = await instance.httpsCallable('submitNewAccount').call({
+      'email': email,
+      'publicKey': newAccount.publicKey,
+      'accountID': newAccount.accountID,
+      'id': id
+    });
+    return val.data;
   }
 }

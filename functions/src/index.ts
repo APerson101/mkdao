@@ -1,6 +1,6 @@
 // import { AccountId, Client, PrivateKey, TopicId, } from "@hashgraph/sdk";
 import * as functions from "firebase-functions";
-// import { createMutlisigAccount, createnewAccount } from "./createaccount";
+import { createnewAccount } from "./createaccount";
 import {
   //  createInvoice, createTopic, 
   sendMessageToTopic, subscribeToTopic, payInvoicewithId,
@@ -10,7 +10,7 @@ import {
 // import { createToken } from "./token";
 // import { deployTransactionsContract } from "./transactions";
 // import { carryOutArrayOfTransactions, deployContract } from "./maketxns";
-// import { sendEmail } from "./mailingservice";
+import { sendEmail } from "./mailingservice";
 import * as admin from "firebase-admin";
 const serviceAccount = require("../mkdao-564b7-firebase-adminsdk-9a503-59829ead57.json");
 admin.initializeApp({
@@ -18,23 +18,22 @@ admin.initializeApp({
   databaseURL: "https://mkdao-564b7-default-rtdb.firebaseio.com"
 });
 
-// export const createAccount = functions.https.onCall(async (data) => {
-//   return await createnewAccount();
-// });
+export const createAccount = functions.https.onCall(async (data) => {
+  return await createnewAccount();
+});
 
 // export const createMultiSigACC = functions.https.onCall(async (data) => {
 //   const publicKeyList = data.keys;
 //   const min_required = data.min_requied;
 //   return await createMutlisigAccount(publicKeyList, min_required)
 // })
-// export const sendMail = functions.https.onCall(async (variables) => {
-//   console.log("what is the issue hrer");
-//   var receivers = variables.receivers;
-//   var number_of_people = variables.number_of_people;
-//   var daoname = variables.daoName;
+export const sendSignUpEmails = functions.https.onCall(async (variables) => {
+  var receivers = variables.emails;
+  var daoname = variables.daoName;
+  var id = variables.id;
 
-//   return await sendEmail(receivers, daoname, number_of_people);
-// });
+  return await sendEmail(receivers, daoname, id);
+});
 export const sub2Topic = functions.https.onCall(async (data) => {
   const _token = data.token
   await subscribeToTopic(_token);
@@ -60,6 +59,19 @@ export const acknowledgeInvoice = functions.https.onCall(async (data) => {
 export const payInvoice = functions.https.onCall(async (data) => {
   const invoiceId = data.invoiceId;
   return await payInvoicewithId(invoiceId);
+});
+
+export const submitNewAccount = functions.https.onCall(async (data) => {
+  const publicKey = data.publicKey;
+  const accountID = data.accountID;
+  const id = data.id;
+  const email = data.email;
+  await admin.firestore().collection(`MultiSig/${id}/accounts`).add({
+    accountId: accountID,
+    publicKey: publicKey,
+    email: email
+  });
+  return true;
 });
 
 

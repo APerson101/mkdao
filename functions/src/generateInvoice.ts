@@ -5,7 +5,7 @@ import {
   ContractCallQuery,
   ContractFunctionParameters,
   ContractExecuteTransaction, ContractId,
-  PrivateKey, TopicCreateTransaction, TopicId, TopicMessageQuery, TopicMessageSubmitTransaction, TransactionResponse, Hbar, TransferTransaction,
+  PrivateKey, TopicCreateTransaction, TopicId, TopicMessageQuery, TopicMessageSubmitTransaction, TransactionResponse, Hbar,
   // TransferTransaction
 } from "@hashgraph/sdk";
 // import * as fs from "fs";

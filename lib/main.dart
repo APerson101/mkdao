@@ -8,6 +8,8 @@ import 'package:mkdao/home/homeview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mkdao/notificationstester.dart';
 
+import 'emailsignup.dart';
+
 void main() async {
   await Firebase.initializeApp(
       options: const FirebaseOptions(
@@ -40,8 +42,12 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'HRDAO Demo',
-      home: NotificationsTesters(),
-      // LandingPage(),
+      getPages: [
+        GetPage(name: '/', page: () => LandingPage()),
+        GetPage(name: '/test', page: () => NotificationsTesters()),
+        GetPage(name: '/EmailSignUp', page: () => EmailSignUpView()),
+      ],
+      initialRoute: '/',
       theme: ThemeData.dark(),
     );
   }

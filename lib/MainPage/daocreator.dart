@@ -44,7 +44,13 @@ class DAOCreator extends GetxController {
   sendEmail(int index) async {
     //do stuffs
     allSigneesStatus[index] = EmailSendingStatus.sending;
-    // await BackendHelper().sendEmail(allSigneesEmail[index]);
+    List<String> emails = [];
+    for (var i = 0; i < allSigneesEmail.length; i++) {
+      if (allSigneesEmail[i] != '') {
+        emails.add(allSigneesEmail[i]);
+      }
+    }
+    print(await BackendHelper().sendEmail(emails));
     allSigneesStatus[index] = EmailSendingStatus.sent;
   }
 
